@@ -66,12 +66,13 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Brand colors
-        terracotta: "hsl(var(--terracotta))",
+        // Brand colors - Logo palette
+        sun: "hsl(var(--sun))",
+        "dark-green": "hsl(var(--dark-green))",
         olive: "hsl(var(--olive))",
-        sand: "hsl(var(--sand))",
-        cream: "hsl(var(--cream))",
-        charcoal: "hsl(var(--charcoal))",
+        sage: "hsl(var(--sage))",
+        teal: "hsl(var(--teal))",
+        "section-bg": "hsl(var(--section-bg))",
       },
       borderRadius: {
         lg: "var(--radius)",
