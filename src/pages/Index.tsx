@@ -14,7 +14,6 @@ import EmailCapture from '@/components/home/EmailCapture';
 const Index = () => {
   const config = {
     shippingThreshold: 59,
-    cartItemsCount: 0,
   };
 
   return (
@@ -82,7 +81,7 @@ const Index = () => {
 
       <div className="min-h-screen flex flex-col">
         <AnnouncementBar shippingThreshold={config.shippingThreshold} />
-        <Header cartItemsCount={config.cartItemsCount} />
+        <Header />
         
         <main id="main-content">
           <Hero shippingThreshold={config.shippingThreshold} />
