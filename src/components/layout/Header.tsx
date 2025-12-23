@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Search, ShoppingBag, Menu, X, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import minneleaLogo from '@/assets/minnelea-logo.png';
 
 const navigation = [
   { name: 'Confetture', href: '/collezioni/confetture' },
@@ -74,9 +75,11 @@ const Header = ({ cartItemsCount = 0 }: HeaderProps) => {
             className="flex-shrink-0"
             aria-label="Minnelea - Torna alla homepage"
           >
-            <span className="font-serif text-2xl md:text-3xl font-semibold tracking-tight text-foreground">
-              Minnelea
-            </span>
+            <img 
+              src={minneleaLogo} 
+              alt="Minnelea" 
+              className="h-12 md:h-14 w-auto"
+            />
           </a>
 
           {/* Desktop navigation */}
