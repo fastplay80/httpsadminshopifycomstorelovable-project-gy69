@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Search, ShoppingBag, Menu, X, User } from 'lucide-react';
+import { Search, Menu, X, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import minneleaLogo from '@/assets/minnelea-logo.png';
+import CartDrawer from '@/components/cart/CartDrawer';
 
 const navigation = [
   { name: 'Confetture', href: '/collezioni/confetture' },
@@ -12,11 +13,7 @@ const navigation = [
   { name: 'La Nostra Storia', href: '/chi-siamo' },
 ];
 
-interface HeaderProps {
-  cartItemsCount?: number;
-}
-
-const Header = ({ cartItemsCount = 0 }: HeaderProps) => {
+const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -118,22 +115,7 @@ const Header = ({ cartItemsCount = 0 }: HeaderProps) => {
             </a>
 
             {/* Cart */}
-            <a
-              href="/carrello"
-              className="p-2 hover:bg-muted rounded-sm transition-colors relative"
-              aria-label={`Carrello, ${cartItemsCount} articoli`}
-            >
-              <ShoppingBag className="w-5 h-5" />
-              {cartItemsCount > 0 && (
-                <span 
-                  className="absolute -top-0.5 -right-0.5 w-5 h-5 flex items-center justify-center
-                           bg-primary text-primary-foreground text-xs font-medium rounded-full"
-                  aria-hidden="true"
-                >
-                  {cartItemsCount > 9 ? '9+' : cartItemsCount}
-                </span>
-              )}
-            </a>
+            <CartDrawer />
           </div>
         </div>
 
