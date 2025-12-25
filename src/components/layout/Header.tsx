@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Search, Menu, X, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import minneleaLogo from '@/assets/minnelea-logo.png';
@@ -67,8 +68,8 @@ const Header = () => {
           </button>
 
           {/* Logo */}
-          <a 
-            href="/" 
+          <Link 
+            to="/" 
             className="flex-shrink-0"
             aria-label="Minnelea - Torna alla homepage"
           >
@@ -77,19 +78,19 @@ const Header = () => {
               alt="Minnelea" 
               className="h-12 md:h-14 w-auto"
             />
-          </a>
+          </Link>
 
           {/* Desktop navigation */}
           <div className="hidden lg:flex items-center gap-8">
             {navigation.map((item) => (
-              <a
+              <Link
                 key={item.name}
-                href={item.href}
+                to={item.href}
                 className="text-sm font-medium text-muted-foreground hover:text-foreground 
                          transition-colors link-underline"
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -106,13 +107,13 @@ const Header = () => {
             </button>
 
             {/* Account - hidden on mobile for simplicity */}
-            <a
-              href="/account"
+            <Link
+              to="/account"
               className="hidden md:flex p-2 hover:bg-muted rounded-sm transition-colors"
               aria-label="Il mio account"
             >
               <User className="w-5 h-5" />
-            </a>
+            </Link>
 
             {/* Cart */}
             <CartDrawer />
@@ -152,26 +153,26 @@ const Header = () => {
           <ul className="space-y-1">
             {navigation.map((item) => (
               <li key={item.name}>
-                <a
-                  href={item.href}
+                <Link
+                  to={item.href}
                   className="block py-3 px-2 text-lg font-serif font-medium text-foreground
                            hover:bg-muted rounded-sm transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
           
           <div className="mt-8 pt-8 border-t border-border">
-            <a
-              href="/account"
+            <Link
+              to="/account"
               className="flex items-center gap-3 py-3 px-2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <User className="w-5 h-5" />
               <span className="font-medium">Il mio account</span>
-            </a>
+            </Link>
           </div>
         </nav>
       </div>
