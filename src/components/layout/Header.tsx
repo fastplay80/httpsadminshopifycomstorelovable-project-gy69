@@ -13,6 +13,7 @@ const navigation = [
   { name: 'Box Regalo', href: '/collezioni/box-regalo' },
   { name: 'La Nostra Storia', href: '/chi-siamo' },
   { name: 'Journal', href: '/blog' },
+  { name: 'Contatti', href: '/contatti' },
 ];
 
 const Header = () => {
