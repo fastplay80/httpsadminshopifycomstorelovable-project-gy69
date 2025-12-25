@@ -10,8 +10,14 @@ const BestSellers = () => {
   useEffect(() => {
     const loadProducts = async () => {
       setIsLoading(true);
-      const fetchedProducts = await fetchProducts(6);
-      setProducts(fetchedProducts);
+      const fetchedProducts = await fetchProducts(20);
+      // Filter only available products
+      const availableProducts = fetchedProducts.filter(
+        (product) => product.node.variants.edges.some(
+          (variant) => variant.node.availableForSale
+        )
+      );
+      setProducts(availableProducts);
       setIsLoading(false);
     };
     loadProducts();
