@@ -1,4 +1,5 @@
 import { Plus, Eye } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { ShopifyProduct, CartItem } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { toast } from 'sonner';
@@ -66,14 +67,14 @@ const ShopifyProductCard = ({ product }: ShopifyProductCardProps) => {
         <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 
                       transition-all duration-300 flex items-center justify-center opacity-0 
                       group-hover:opacity-100">
-          <a
-            href={`/prodotti/${node.handle}`}
+          <Link
+            to={`/prodotti/${node.handle}`}
             className="btn-secondary bg-background/95 backdrop-blur-sm gap-2 text-sm"
             aria-label={`Scopri ${node.title}`}
           >
             <Eye className="w-4 h-4" />
             Scopri
-          </a>
+          </Link>
         </div>
       </div>
       
@@ -82,9 +83,9 @@ const ShopifyProductCard = ({ product }: ShopifyProductCardProps) => {
         {/* Title */}
         <h3 className="font-serif text-lg font-medium text-foreground mb-1 
                      group-hover:text-primary transition-colors line-clamp-2">
-          <a href={`/prodotti/${node.handle}`}>
+          <Link to={`/prodotti/${node.handle}`}>
             {node.title}
-          </a>
+          </Link>
         </h3>
         
         {/* Description */}
