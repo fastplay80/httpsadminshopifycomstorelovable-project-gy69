@@ -12,6 +12,7 @@ const navigation = [
   { name: 'Sughi', href: '/collezioni/sughi' },
   { name: 'Box Regalo', href: '/collezioni/box-regalo' },
   { name: 'La Nostra Storia', href: '/chi-siamo' },
+  { name: 'Journal', href: '/blog' },
 ];
 
 const Header = () => {
