@@ -9,6 +9,7 @@ import WhyMinnlea from '@/components/home/WhyMinnlea';
 import Awards from '@/components/home/Awards';
 import LifestyleEditorial from '@/components/home/LifestyleEditorial';
 import SocialProof from '@/components/home/SocialProof';
+import { BlogSection } from '@/components/home/BlogSection';
 import EmailCapture from '@/components/home/EmailCapture';
 
 const Index = () => {
@@ -90,6 +91,7 @@ const Index = () => {
           <WhyMinnlea />
           <Awards />
           <LifestyleEditorial />
+          <BlogSection />
           <SocialProof />
           <EmailCapture />
         </main>
