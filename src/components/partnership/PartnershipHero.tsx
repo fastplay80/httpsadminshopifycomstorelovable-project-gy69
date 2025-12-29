@@ -31,7 +31,7 @@ const PartnershipHero = ({ onApplyClick }: PartnershipHeroProps) => {
           {/* Descriptive paragraph */}
           <p className="text-body max-w-2xl mx-auto mb-12 animate-fade-up opacity-0 stagger-3">
             Minnelea è un marchio artigianale di eccellenza dal Cilento. 
-            Produciamo in piccoli lotti, con ingredienti selezionati e metodi tradizionali. 
+            Produciamo in piccoli lotti, con ingredienti selezionati e cottura in vuoto. 
             La nostra distribuzione è esclusiva: scegliamo con cura i partner che condividono 
             la nostra visione di qualità e autenticità.
           </p>

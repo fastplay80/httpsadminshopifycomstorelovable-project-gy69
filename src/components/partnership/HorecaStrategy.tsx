@@ -57,12 +57,28 @@ const HorecaStrategy = () => {
           
           {/* Explanation */}
           <div className="mt-12 max-w-3xl mx-auto text-center">
-            <p className="text-body">
-              Questo modello crea un ciclo virtuoso: il ristorante diventa 
-              ambasciatore del brand, il cliente scopre il prodotto nel contesto ideale, 
-              e l'acquisto retail completa l'esperienza. Un approccio che valorizza 
-              sia il partner Horeca che il punto vendita retail.
+            <p className="text-body mb-8">
+              L'enoteca diventa ambasciatore del brand: il cliente scopre il prodotto 
+              nel contesto ideale e l'acquisto retail completa l'esperienza.
             </p>
+            
+            {/* Order minimums */}
+            <div className="grid sm:grid-cols-2 gap-6 mt-8">
+              <div className="bg-card p-6 rounded-sm border border-border">
+                <h4 className="font-serif font-medium text-lg mb-2">Prodotti Horeca</h4>
+                <p className="text-sm text-muted-foreground">
+                  Micro lotti personalizzati per gusti a scelta.<br />
+                  <span className="font-medium text-foreground">Ordine minimo: 30 vasi</span>
+                </p>
+              </div>
+              <div className="bg-card p-6 rounded-sm border border-border">
+                <h4 className="font-serif font-medium text-lg mb-2">Prodotti Retail</h4>
+                <p className="text-sm text-muted-foreground">
+                  Formati classici per la vendita al dettaglio.<br />
+                  <span className="font-medium text-foreground">Ordine minimo: 100 pezzi</span>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

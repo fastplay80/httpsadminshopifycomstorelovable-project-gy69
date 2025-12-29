@@ -31,7 +31,7 @@ const ExclusivityPolicy = () => {
                 garantendo che ogni partner operi in una zona distinta.
               </p>
               <p className="text-sm text-muted-foreground italic">
-                Milano, Roma, Napoli, Torino...
+                Roma, Milano, Parigi, Monaco...
               </p>
             </div>
             
