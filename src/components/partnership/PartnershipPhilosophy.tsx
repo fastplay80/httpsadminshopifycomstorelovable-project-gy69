@@ -30,8 +30,8 @@ const PartnershipPhilosophy = () => {
             </div>
             
             <p className="font-serif text-xl md:text-2xl text-foreground leading-relaxed text-center mb-8">
-              Minnelea non è un prodotto da distribuire. 
-              È un brand da rappresentare.
+              Minnelea è una visione contemporanea della Dieta Mediterranea,<br />
+              costruita su ricette essenziali e ingredienti di altissima qualità.
             </p>
             
             <p className="text-body text-center max-w-2xl mx-auto">
@@ -57,13 +57,6 @@ const PartnershipPhilosophy = () => {
                 </span>
               </div>
             ))}
-          </div>
-          
-          {/* Closing statement */}
-          <div className="mt-16 text-center">
-            <p className="font-serif text-lg md:text-xl text-foreground italic">
-              "Minnelea è prima di tutto un brand. Poi, un prodotto."
-            </p>
           </div>
         </div>
       </div>
