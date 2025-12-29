@@ -1,25 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Menu, X, User } from 'lucide-react';
+import { Search, Menu, X, User, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import minneleaLogo from '@/assets/minnelea-logo.png';
 import CartDrawer from '@/components/cart/CartDrawer';
 
-const navigation = [
-  { name: 'Confetture', href: '/collezioni/confetture' },
-  { name: 'Sott\'oli', href: '/collezioni/sottoli' },
+const shopCategories = [
+  { name: 'Tutti i Prodotti', href: '/collezioni/tutti' },
+  { name: 'Marmellate', href: '/collezioni/marmellate' },
   { name: 'Creme Salate', href: '/collezioni/creme-salate' },
-  { name: 'Sughi', href: '/collezioni/sughi' },
-  { name: 'Box Regalo', href: '/collezioni/box-regalo' },
-  { name: 'La Nostra Storia', href: '/chi-siamo' },
-  { name: 'Journal', href: '/blog' },
+  { name: 'Sott\'olio', href: '/collezioni/sottoli' },
+  { name: 'Sughi Pronti', href: '/collezioni/sughi' },
+];
+
+const navigation = [
+  { name: 'Home', href: '/' },
+  { name: 'Shop', href: '/collezioni/tutti', hasDropdown: true },
+  { name: 'Blog', href: '/blog' },
   { name: 'Contatti', href: '/contatti' },
+  { name: 'Ricette', href: '/ricette' },
+  { name: 'Premi', href: '/chi-siamo' },
 ];
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isShopDropdownOpen, setIsShopDropdownOpen] = useState(false);
+  const [isMobileShopOpen, setIsMobileShopOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,6 +37,18 @@ const Header = () => {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsShopDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Prevent body scroll when mobile menu is open
@@ -85,14 +106,50 @@ const Header = () => {
           {/* Desktop navigation */}
           <div className="hidden lg:flex items-center gap-8">
             {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground 
-                         transition-colors link-underline"
-              >
-                {item.name}
-              </Link>
+              item.hasDropdown ? (
+                <div key={item.name} className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => setIsShopDropdownOpen(!isShopDropdownOpen)}
+                    className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground 
+                             transition-colors"
+                    aria-expanded={isShopDropdownOpen}
+                    aria-haspopup="true"
+                  >
+                    {item.name}
+                    <ChevronDown className={cn(
+                      "w-4 h-4 transition-transform",
+                      isShopDropdownOpen && "rotate-180"
+                    )} />
+                  </button>
+                  
+                  {/* Dropdown menu */}
+                  {isShopDropdownOpen && (
+                    <div className="absolute left-0 top-full pt-2 z-50">
+                      <div className="bg-background border border-border rounded-sm shadow-lg py-2 min-w-[180px]">
+                        {shopCategories.map((category) => (
+                          <Link
+                            key={category.name}
+                            to={category.href}
+                            className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                            onClick={() => setIsShopDropdownOpen(false)}
+                          >
+                            {category.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground 
+                           transition-colors link-underline"
+                >
+                  {item.name}
+                </Link>
+              )
             ))}
           </div>
 
@@ -154,16 +211,50 @@ const Header = () => {
         <nav className="container-editorial py-6">
           <ul className="space-y-1">
             {navigation.map((item) => (
-              <li key={item.name}>
-                <Link
-                  to={item.href}
-                  className="block py-3 px-2 text-lg font-serif font-medium text-foreground
-                           hover:bg-muted rounded-sm transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              </li>
+              item.hasDropdown ? (
+                <li key={item.name}>
+                  <button
+                    onClick={() => setIsMobileShopOpen(!isMobileShopOpen)}
+                    className="flex items-center justify-between w-full py-3 px-2 text-lg font-serif font-medium text-foreground
+                             hover:bg-muted rounded-sm transition-colors"
+                  >
+                    {item.name}
+                    <ChevronDown className={cn(
+                      "w-5 h-5 transition-transform",
+                      isMobileShopOpen && "rotate-180"
+                    )} />
+                  </button>
+                  {isMobileShopOpen && (
+                    <ul className="ml-4 mt-1 space-y-1 border-l border-border pl-4">
+                      {shopCategories.map((category) => (
+                        <li key={category.name}>
+                          <Link
+                            to={category.href}
+                            className="block py-2 text-base text-muted-foreground hover:text-foreground transition-colors"
+                            onClick={() => {
+                              setIsMobileMenuOpen(false);
+                              setIsMobileShopOpen(false);
+                            }}
+                          >
+                            {category.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ) : (
+                <li key={item.name}>
+                  <Link
+                    to={item.href}
+                    className="block py-3 px-2 text-lg font-serif font-medium text-foreground
+                             hover:bg-muted rounded-sm transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              )
             ))}
           </ul>
           
