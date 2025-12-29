@@ -19,7 +19,7 @@ const navigation = [
   { name: 'Blog', href: '/blog' },
   { name: 'Contatti', href: '/contatti' },
   { name: 'Ricette', href: '/ricette' },
-  { name: 'Premi', href: '/chi-siamo' },
+  { name: 'Premi', href: '/premi' },
 ];
 
 const Header = () => {
