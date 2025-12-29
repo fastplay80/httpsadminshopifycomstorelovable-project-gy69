@@ -35,9 +35,7 @@ const PartnershipPhilosophy = () => {
             </p>
             
             <p className="text-body text-center max-w-2xl mx-auto">
-              Ogni vasetto che lascia il nostro laboratorio porta con sé 
-              la storia del Cilento, la dedizione dei nostri artigiani, 
-              e la promessa di un'eccellenza senza compromessi. 
+              Ogni vasetto che lascia il nostro laboratorio porta con sé la storia del Cilento. 
               Per questo scegliamo con attenzione chi condivide questo viaggio con noi.
             </p>
           </div>
