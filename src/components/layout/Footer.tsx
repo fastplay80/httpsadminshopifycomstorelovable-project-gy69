@@ -35,6 +35,7 @@ const footerLinks = {
       { name: 'B2B & Ingrosso', href: '/b2b' },
       { name: 'Regali Aziendali', href: '/regali-aziendali' },
       { name: 'Diventa Rivenditore', href: '/diventa-rivenditore' },
+      { name: 'Diventa Affiliate', href: '/affiliate' },
     ],
   },
 };
