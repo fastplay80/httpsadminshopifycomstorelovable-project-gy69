@@ -56,9 +56,6 @@ const WhyMinnlea = () => {
             <blockquote className="font-serif text-2xl md:text-3xl italic leading-relaxed mb-6">
               "Non devi inventare una storia. Devi solo condividere quello che fai davvero con i nostri prodotti."
             </blockquote>
-            <p className="text-sm text-muted-foreground">
-              — Il team Minnelea
-            </p>
           </div>
         </div>
       </div>
