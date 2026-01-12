@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import RelatedProducts from '@/components/product/RelatedProducts';
+import BoughtTogether from '@/components/product/BoughtTogether';
 
 const ProductDetail = () => {
   const { handle } = useParams<{ handle: string }>();
@@ -204,6 +205,9 @@ const ProductDetail = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Bought Together */}
+              <BoughtTogether currentProduct={product} />
             </div>
           </div>
         </section>
