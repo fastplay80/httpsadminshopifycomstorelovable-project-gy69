@@ -16,6 +16,7 @@ import Affiliate from "./pages/Affiliate";
 import NotFound from "./pages/NotFound";
 import EditRecipe from "./pages/admin/EditRecipe";
 import Awards from "./pages/Awards";
+import Ingredients from "./pages/Ingredients";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/diventa-rivenditore" element={<Partnership />} />
             <Route path="/affiliate" element={<Affiliate />} />
             <Route path="/premi" element={<Awards />} />
+            <Route path="/ingredienti" element={<Ingredients />} />
             <Route path="/admin/recipes/:id/edit" element={<EditRecipe />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
