@@ -7,6 +7,7 @@ import { useCartStore } from '@/stores/cartStore';
 import { toast } from 'sonner';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import RelatedProducts from '@/components/product/RelatedProducts';
 
 const ProductDetail = () => {
   const { handle } = useParams<{ handle: string }>();
@@ -205,6 +206,11 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
+        </section>
+
+        {/* Related Products */}
+        <section className="container-editorial pb-16">
+          <RelatedProducts currentProductHandle={handle || ''} />
         </section>
       </main>
       
