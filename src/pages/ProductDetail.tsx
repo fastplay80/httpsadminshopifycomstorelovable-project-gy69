@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ArrowLeft, Plus, Minus, ShoppingCart, Loader2 } from 'lucide-react';
+import { Plus, Minus, ShoppingCart, Loader2 } from 'lucide-react';
 import { fetchProductByHandle, CartItem, ShopifyProduct } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { toast } from 'sonner';
@@ -9,6 +9,11 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import RelatedProducts from '@/components/product/RelatedProducts';
 import BoughtTogether from '@/components/product/BoughtTogether';
+import TrustBadges from '@/components/product/TrustBadges';
+import KeyBenefits from '@/components/product/KeyBenefits';
+import ProductTabs from '@/components/product/ProductTabs';
+import ProductFAQ from '@/components/product/ProductFAQ';
+import ProductBreadcrumb from '@/components/product/ProductBreadcrumb';
 
 const ProductDetail = () => {
   const { handle } = useParams<{ handle: string }>();
@@ -86,6 +91,10 @@ const ProductDetail = () => {
   const images = product.images.edges;
   const firstVariant = product.variants.edges[0]?.node;
   const isAvailable = firstVariant?.availableForSale;
+  
+  // Calculate price per kg (assuming 200g standard weight for now)
+  const weightGrams = 200;
+  const pricePerKg = (price / weightGrams) * 1000;
 
   return (
     <>
@@ -99,13 +108,7 @@ const ProductDetail = () => {
       <main className="pt-20">
         {/* Breadcrumb */}
         <div className="container-editorial py-4">
-          <Link 
-            to="/" 
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Torna ai prodotti
-          </Link>
+          <ProductBreadcrumb productTitle={product.title} />
         </div>
 
         {/* Product section */}
@@ -160,9 +163,25 @@ const ProductDetail = () => {
                 {product.title}
               </h1>
               
-              <p className="text-2xl font-medium text-primary mb-6">
-                €{price.toFixed(2)}
-              </p>
+              {/* Price with price per kg */}
+              <div className="mb-4">
+                <p className="text-2xl font-medium text-primary">
+                  €{price.toFixed(2)}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  (€{pricePerKg.toFixed(2)}/kg)
+                </p>
+              </div>
+
+              {/* Trust Badges */}
+              <div className="mb-6">
+                <TrustBadges />
+              </div>
+
+              {/* Key Benefits */}
+              <div className="mb-6">
+                <KeyBenefits />
+              </div>
 
               {/* Quantity selector */}
               <div className="flex items-center gap-4 mb-6">
@@ -205,6 +224,12 @@ const ProductDetail = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Product Tabs (Ingredients, Nutrition, Usage, Storage) */}
+              <ProductTabs />
+
+              {/* Product FAQ */}
+              <ProductFAQ />
 
               {/* Bought Together */}
               <BoughtTogether currentProduct={product} />
