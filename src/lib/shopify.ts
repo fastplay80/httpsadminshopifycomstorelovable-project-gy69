@@ -7,6 +7,12 @@ const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${
 const SHOPIFY_STOREFRONT_TOKEN = 'f549faa4f96e6df26d136a4d039c693a';
 
 // TypeScript interfaces
+export interface ProductMetafield {
+  key: string;
+  value: string;
+  type: string;
+}
+
 export interface ShopifyProduct {
   node: {
     id: string;
@@ -48,6 +54,27 @@ export interface ShopifyProduct {
       name: string;
       values: string[];
     }>;
+    // Metafields for product details
+    metafields?: Array<ProductMetafield | null>;
+  };
+}
+
+// Parsed product metadata from Shopify metafields
+export interface ProductMetadata {
+  ingredients?: string;
+  allergens?: string;
+  usage?: string[];
+  storage?: string;
+  weightGrams?: number;
+  nutrition?: {
+    energia?: string;
+    grassi?: string;
+    grassiSaturi?: string;
+    carboidrati?: string;
+    zuccheri?: string;
+    proteine?: string;
+    sale?: string;
+    fibre?: string;
   };
 }
 
@@ -143,6 +170,25 @@ const STOREFRONT_PRODUCT_BY_HANDLE_QUERY = `
       options {
         name
         values
+      }
+      metafields(identifiers: [
+        { namespace: "custom", key: "ingredients" },
+        { namespace: "custom", key: "allergens" },
+        { namespace: "custom", key: "usage_suggestions" },
+        { namespace: "custom", key: "storage" },
+        { namespace: "custom", key: "weight_grams" },
+        { namespace: "custom", key: "nutrition_energia" },
+        { namespace: "custom", key: "nutrition_grassi" },
+        { namespace: "custom", key: "nutrition_grassi_saturi" },
+        { namespace: "custom", key: "nutrition_carboidrati" },
+        { namespace: "custom", key: "nutrition_zuccheri" },
+        { namespace: "custom", key: "nutrition_proteine" },
+        { namespace: "custom", key: "nutrition_sale" },
+        { namespace: "custom", key: "nutrition_fibre" }
+      ]) {
+        key
+        value
+        type
       }
     }
   }
@@ -248,6 +294,36 @@ export async function fetchProductByHandle(handle: string) {
     console.error('Error fetching product:', error);
     return null;
   }
+}
+
+// Parse metafields into structured product metadata
+export function parseProductMetadata(metafields: Array<ProductMetafield | null> | undefined): ProductMetadata {
+  if (!metafields) return {};
+  
+  const getMetafield = (key: string): string | undefined => {
+    const field = metafields.find(m => m?.key === key);
+    return field?.value;
+  };
+  
+  const usageSuggestions = getMetafield('usage_suggestions');
+  
+  return {
+    ingredients: getMetafield('ingredients'),
+    allergens: getMetafield('allergens'),
+    usage: usageSuggestions ? usageSuggestions.split('\n').filter(Boolean) : undefined,
+    storage: getMetafield('storage'),
+    weightGrams: getMetafield('weight_grams') ? parseInt(getMetafield('weight_grams')!, 10) : undefined,
+    nutrition: {
+      energia: getMetafield('nutrition_energia'),
+      grassi: getMetafield('nutrition_grassi'),
+      grassiSaturi: getMetafield('nutrition_grassi_saturi'),
+      carboidrati: getMetafield('nutrition_carboidrati'),
+      zuccheri: getMetafield('nutrition_zuccheri'),
+      proteine: getMetafield('nutrition_proteine'),
+      sale: getMetafield('nutrition_sale'),
+      fibre: getMetafield('nutrition_fibre'),
+    },
+  };
 }
 
 // Create checkout from cart items

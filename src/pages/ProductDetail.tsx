@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Plus, Minus, ShoppingCart, Loader2 } from 'lucide-react';
-import { fetchProductByHandle, CartItem, ShopifyProduct } from '@/lib/shopify';
+import { fetchProductByHandle, CartItem, ShopifyProduct, parseProductMetadata } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { toast } from 'sonner';
 import Header from '@/components/layout/Header';
@@ -92,8 +92,11 @@ const ProductDetail = () => {
   const firstVariant = product.variants.edges[0]?.node;
   const isAvailable = firstVariant?.availableForSale;
   
-  // Calculate price per kg (assuming 200g standard weight for now)
-  const weightGrams = 200;
+  // Parse metafields for product metadata
+  const metadata = useMemo(() => parseProductMetadata(product.metafields), [product.metafields]);
+  
+  // Calculate price per kg using weight from metafields or default
+  const weightGrams = metadata.weightGrams || 200;
   const pricePerKg = (price / weightGrams) * 1000;
 
   return (
@@ -226,7 +229,14 @@ const ProductDetail = () => {
               </div>
 
               {/* Product Tabs (Ingredients, Nutrition, Usage, Storage) */}
-              <ProductTabs />
+              <ProductTabs 
+                ingredients={metadata.ingredients}
+                allergens={metadata.allergens}
+                usage={metadata.usage}
+                storage={metadata.storage}
+                weightGrams={weightGrams}
+                nutrition={metadata.nutrition}
+              />
 
               {/* Product FAQ */}
               <ProductFAQ />
