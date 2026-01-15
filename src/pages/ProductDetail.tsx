@@ -35,6 +35,9 @@ const ProductDetail = () => {
     loadProduct();
   }, [handle]);
 
+  // Parse metafields for product metadata - MUST be before any early returns
+  const metadata = useMemo(() => parseProductMetadata(product?.metafields), [product?.metafields]);
+
   const handleAddToCart = () => {
     if (!product) return;
     
@@ -49,8 +52,8 @@ const ProductDetail = () => {
       variantId: firstVariant.id,
       variantTitle: firstVariant.title,
       price: firstVariant.price,
-      quantity,
-      selectedOptions: firstVariant.selectedOptions || []
+      selectedOptions: firstVariant.selectedOptions || [],
+      quantity
     };
     
     addItem(cartItem);
@@ -91,9 +94,6 @@ const ProductDetail = () => {
   const images = product.images.edges;
   const firstVariant = product.variants.edges[0]?.node;
   const isAvailable = firstVariant?.availableForSale;
-  
-  // Parse metafields for product metadata
-  const metadata = useMemo(() => parseProductMetadata(product.metafields), [product.metafields]);
   
   // Calculate price per kg using weight from metafields or default
   const weightGrams = metadata.weightGrams || 200;
