@@ -1,4 +1,5 @@
-import { Instagram, Facebook, Mail, MapPin } from 'lucide-react';
+import { Instagram, Facebook, Mail, MapPin, Phone } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const footerLinks = {
   shop: {
@@ -8,7 +9,6 @@ const footerLinks = {
       { name: 'Sott\'oli', href: '/collezioni/sottoli' },
       { name: 'Creme Salate', href: '/collezioni/creme-salate' },
       { name: 'Sughi', href: '/collezioni/sughi' },
-      { name: 'Box Regalo', href: '/collezioni/box-regalo' },
     ],
   },
   company: {
@@ -17,23 +17,19 @@ const footerLinks = {
       { name: 'La Nostra Storia', href: '/chi-siamo' },
       { name: 'I Nostri Premi', href: '/premi' },
       { name: 'Ingredienti', href: '/ingredienti' },
-      { name: 'Blog & Ricette', href: '/blog' },
+      { name: 'Journal', href: '/blog' },
+      { name: 'Ricette', href: '/ricette' },
     ],
   },
   support: {
     title: 'Assistenza',
     links: [
-      { name: 'Spedizioni', href: '/spedizioni' },
-      { name: 'Resi e Rimborsi', href: '/resi' },
-      { name: 'FAQ', href: '/faq' },
       { name: 'Contattaci', href: '/contatti' },
     ],
   },
   business: {
     title: 'Business',
     links: [
-      { name: 'B2B & Ingrosso', href: '/b2b' },
-      { name: 'Regali Aziendali', href: '/regali-aziendali' },
       { name: 'Diventa Rivenditore', href: '/diventa-rivenditore' },
       { name: 'Diventa Affiliate', href: '/affiliate' },
     ],
@@ -65,6 +61,15 @@ const Footer = () => {
             {/* Contact info */}
             <div className="space-y-2 text-sm text-primary-foreground/70">
               <a 
+                href="https://wa.me/393287017040" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:text-primary-foreground transition-colors"
+              >
+                <Phone className="w-4 h-4" />
+                +39 328 701 7040
+              </a>
+              <a 
                 href="mailto:info@minnelea.com" 
                 className="flex items-center gap-2 hover:text-primary-foreground transition-colors"
               >
@@ -73,7 +78,7 @@ const Footer = () => {
               </a>
               <p className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                Moio della Civitella, Parco Nazionale del Cilento, Provincia SA
+                Via Serra 12, Moio della Civitella (SA), Cilento
               </p>
             </div>
             
@@ -105,13 +110,13 @@ const Footer = () => {
               <ul className="space-y-2">
                 {section.links.map((link) => (
                   <li key={link.name}>
-                    <a
-                      href={link.href}
+                    <Link
+                      to={link.href}
                       className="text-sm text-primary-foreground/70 hover:text-primary-foreground 
                                transition-colors"
                     >
                       {link.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
