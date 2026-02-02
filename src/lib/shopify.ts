@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 const SHOPIFY_API_VERSION = '2025-07';
 const SHOPIFY_STORE_PERMANENT_DOMAIN = 'minnelea2.myshopify.com';
 const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
-const SHOPIFY_STOREFRONT_TOKEN = 'f549faa4f96e6df26d136a4d039c693a';
+const SHOPIFY_STOREFRONT_TOKEN = '8df090f48485e8d67e2ad438f8c04db7';
 
 // TypeScript interfaces
 export interface ProductMetafield {
