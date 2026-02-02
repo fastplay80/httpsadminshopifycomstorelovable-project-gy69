@@ -1,4 +1,4 @@
-import { Instagram, Facebook, Mail, MapPin, Phone } from 'lucide-react';
+import { Instagram, Facebook, Mail, MapPin } from 'lucide-react';
 
 const footerLinks = {
   shop: {
@@ -59,8 +59,7 @@ const Footer = () => {
               <span className="font-serif text-2xl font-semibold">Minnelea</span>
             </a>
             <p className="text-sm text-primary-foreground/70 leading-relaxed mb-6 max-w-xs">
-              Conserve artigianali dal Parco del Cilento. 
-              Piccoli lotti, ingredienti italiani, gusto autentico.
+              Conserve Artigianali Gourmet
             </p>
             
             {/* Contact info */}
@@ -72,16 +71,9 @@ const Footer = () => {
                 <Mail className="w-4 h-4" />
                 info@minnelea.it
               </a>
-              <a 
-                href="tel:+390000000000" 
-                className="flex items-center gap-2 hover:text-primary-foreground transition-colors"
-              >
-                <Phone className="w-4 h-4" />
-                +39 000 000 0000
-              </a>
               <p className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                Parco Nazionale del Cilento, Campania, Italia
+                Moio della Civitella, Parco Nazionale del Cilento, Provincia SA
               </p>
             </div>
             
