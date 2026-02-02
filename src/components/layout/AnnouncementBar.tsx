@@ -16,7 +16,7 @@ const AnnouncementBar = ({
 
   if (!isVisible) return null;
 
-  const defaultMessage = `Spedizione gratuita in Italia da €${shippingThreshold}`;
+  const defaultMessage = "Spedizione gratuita: Italia da €29 · Europa da €49";
 
   return (
     <div 
