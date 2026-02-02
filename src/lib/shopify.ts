@@ -437,7 +437,11 @@ export async function createStorefrontCheckout(items: CartItem[]): Promise<strin
       throw new Error('No checkout URL returned from Shopify');
     }
 
-    const url = new URL(cart.checkoutUrl);
+    // Force myshopify.com domain for checkout (bypasses custom domain issues)
+    let checkoutUrl = cart.checkoutUrl;
+    checkoutUrl = checkoutUrl.replace('minnelea.com', 'minnelea2.myshopify.com');
+    
+    const url = new URL(checkoutUrl);
     url.searchParams.set('channel', 'online_store');
     return url.toString();
   } catch (error) {
