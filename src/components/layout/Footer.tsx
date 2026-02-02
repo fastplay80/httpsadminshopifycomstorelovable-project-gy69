@@ -65,11 +65,11 @@ const Footer = () => {
             {/* Contact info */}
             <div className="space-y-2 text-sm text-primary-foreground/70">
               <a 
-                href="mailto:info@minnelea.it" 
+                href="mailto:info@minnelea.com" 
                 className="flex items-center gap-2 hover:text-primary-foreground transition-colors"
               >
                 <Mail className="w-4 h-4" />
-                info@minnelea.it
+                info@minnelea.com
               </a>
               <p className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
