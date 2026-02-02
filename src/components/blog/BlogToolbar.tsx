@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Search, X } from "lucide-react";
 import { getAllCategories } from "@/lib/blog";
 
@@ -20,7 +21,11 @@ export const BlogToolbar = ({
   onSortChange,
   resultCount
 }: BlogToolbarProps) => {
-  const categories = getAllCategories();
+  const [categories, setCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    getAllCategories().then(setCategories);
+  }, []);
 
   return (
     <div className="container mx-auto px-4 md:px-8 lg:px-12 max-w-7xl py-8 md:py-10">

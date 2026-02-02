@@ -194,6 +194,76 @@ const STOREFRONT_PRODUCT_BY_HANDLE_QUERY = `
   }
 `;
 
+// Blog articles query
+const STOREFRONT_BLOG_ARTICLES_QUERY = `
+  query GetBlogArticles($first: Int!, $blogHandle: String!) {
+    blog(handle: $blogHandle) {
+      id
+      title
+      handle
+      articles(first: $first, sortKey: PUBLISHED_AT, reverse: true) {
+        edges {
+          node {
+            id
+            title
+            handle
+            excerpt
+            publishedAt
+            image {
+              url
+              altText
+            }
+            author {
+              name
+            }
+            content
+            contentHtml
+            tags
+          }
+        }
+      }
+    }
+  }
+`;
+
+const STOREFRONT_ARTICLE_BY_HANDLE_QUERY = `
+  query GetArticleByHandle($blogHandle: String!, $articleHandle: String!) {
+    blog(handle: $blogHandle) {
+      articleByHandle(handle: $articleHandle) {
+        id
+        title
+        handle
+        excerpt
+        publishedAt
+        image {
+          url
+          altText
+        }
+        author {
+          name
+        }
+        content
+        contentHtml
+        tags
+      }
+    }
+  }
+`;
+
+const STOREFRONT_BLOGS_QUERY = `
+  query GetBlogs($first: Int!) {
+    blogs(first: $first) {
+      edges {
+        node {
+          id
+          title
+          handle
+        }
+      }
+    }
+  }
+`;
+
 const CART_CREATE_MUTATION = `
   mutation cartCreate($input: CartInput!) {
     cartCreate(input: $input) {
@@ -374,4 +444,85 @@ export async function createStorefrontCheckout(items: CartItem[]): Promise<strin
     console.error('Error creating storefront checkout:', error);
     throw error;
   }
+}
+
+// Blog Types
+export interface ShopifyArticle {
+  id: string;
+  title: string;
+  handle: string;
+  excerpt: string | null;
+  publishedAt: string;
+  image: {
+    url: string;
+    altText: string | null;
+  } | null;
+  author: {
+    name: string;
+  } | null;
+  content: string;
+  contentHtml: string;
+  tags: string[];
+}
+
+export interface ShopifyBlog {
+  id: string;
+  title: string;
+  handle: string;
+}
+
+// Default blog handle - change this to match your Shopify blog handle
+const DEFAULT_BLOG_HANDLE = 'news';
+
+// Fetch all blogs
+export async function fetchBlogs(first: number = 10): Promise<ShopifyBlog[]> {
+  try {
+    const data = await storefrontApiRequest(STOREFRONT_BLOGS_QUERY, { first });
+    if (!data) return [];
+    return data.data.blogs.edges.map((edge: { node: ShopifyBlog }) => edge.node);
+  } catch (error) {
+    console.error('Error fetching blogs:', error);
+    return [];
+  }
+}
+
+// Fetch all articles from a blog
+export async function fetchBlogArticles(first: number = 50, blogHandle: string = DEFAULT_BLOG_HANDLE): Promise<ShopifyArticle[]> {
+  try {
+    const data = await storefrontApiRequest(STOREFRONT_BLOG_ARTICLES_QUERY, { first, blogHandle });
+    if (!data || !data.data.blog) return [];
+    return data.data.blog.articles.edges.map((edge: { node: ShopifyArticle }) => edge.node);
+  } catch (error) {
+    console.error('Error fetching blog articles:', error);
+    return [];
+  }
+}
+
+// Fetch single article by handle
+export async function fetchArticleByHandle(articleHandle: string, blogHandle: string = DEFAULT_BLOG_HANDLE): Promise<ShopifyArticle | null> {
+  try {
+    const data = await storefrontApiRequest(STOREFRONT_ARTICLE_BY_HANDLE_QUERY, { blogHandle, articleHandle });
+    if (!data || !data.data.blog) return null;
+    return data.data.blog.articleByHandle;
+  } catch (error) {
+    console.error('Error fetching article:', error);
+    return null;
+  }
+}
+
+// Calculate reading time from content
+export function calculateReadingTime(content: string): number {
+  const wordsPerMinute = 200;
+  const wordCount = content.split(/\s+/).length;
+  return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
+}
+
+// Format date for display
+export function formatArticleDate(isoDate: string): string {
+  const date = new Date(isoDate);
+  return date.toLocaleDateString('it-IT', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
 }

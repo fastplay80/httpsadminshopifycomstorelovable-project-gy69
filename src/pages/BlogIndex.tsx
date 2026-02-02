@@ -13,7 +13,8 @@ import {
   filterArticles, 
   paginateArticles, 
   getFeaturedArticle,
-  type FilterOptions 
+  type FilterOptions,
+  type Article
 } from "@/lib/blog";
 
 const ARTICLES_PER_PAGE = 6;
@@ -31,28 +32,47 @@ const BlogIndex = () => {
   const [category, setCategory] = useState(initialCategory);
   const [sort, setSort] = useState(initialSort);
   const [page, setPage] = useState(initialPage);
+  
+  // Articles state
+  const [allArticles, setAllArticles] = useState<Article[]>([]);
+  const [featuredArticle, setFeaturedArticle] = useState<Article | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load articles from Shopify
+  useEffect(() => {
+    const loadArticles = async () => {
+      setIsLoading(true);
+      try {
+        const options: FilterOptions = {
+          search,
+          category,
+          sort: sort as "recent" | "reading-time"
+        };
+        const articles = await filterArticles(options);
+        setAllArticles(articles);
+        
+        const featured = await getFeaturedArticle();
+        setFeaturedArticle(featured);
+      } catch (error) {
+        console.error('Error loading articles:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadArticles();
+  }, [search, category, sort]);
 
   // Featured article (only show on first page with no filters)
-  const featuredArticle = getFeaturedArticle();
-  const showFeatured = page === 1 && !search && category === "all";
-
-  // Filter and paginate
-  const filteredArticles = useMemo(() => {
-    const options: FilterOptions = {
-      search,
-      category,
-      sort: sort as "recent" | "reading-time"
-    };
-    return filterArticles(options);
-  }, [search, category, sort]);
+  const showFeatured = page === 1 && !search && category === "all" && featuredArticle;
 
   // Exclude featured from grid when showing it separately
   const gridArticles = useMemo(() => {
-    if (showFeatured) {
-      return filteredArticles.filter(a => a.slug !== featuredArticle.slug);
+    if (showFeatured && featuredArticle) {
+      return allArticles.filter(a => a.slug !== featuredArticle.slug);
     }
-    return filteredArticles;
-  }, [filteredArticles, showFeatured, featuredArticle]);
+    return allArticles;
+  }, [allArticles, showFeatured, featuredArticle]);
 
   const { articles, totalPages, totalCount } = useMemo(() => {
     return paginateArticles(gridArticles, page, ARTICLES_PER_PAGE);
@@ -141,45 +161,59 @@ const BlogIndex = () => {
         />
 
         <div className="container mx-auto px-4 md:px-8 lg:px-12 max-w-7xl pb-16">
-          {/* Featured Article */}
-          {showFeatured && (
-            <div className="mb-16 md:mb-20">
-              <ArticleCard article={featuredArticle} variant="featured" />
-            </div>
-          )}
-
-          {/* Articles Grid or Empty State */}
-          {articles.length > 0 ? (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 lg:gap-x-10 gap-y-12 md:gap-y-16">
-                {articles.map((article) => (
-                  <ArticleCard key={article.slug} article={article} />
-                ))}
-              </div>
-
-              <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
-            </>
-          ) : (
+          {/* Loading State */}
+          {isLoading ? (
             <div className="py-20 text-center">
-              <p className="font-serif text-2xl text-foreground mb-4">
-                Nessun articolo trovato
-              </p>
-              <p className="text-muted-foreground mb-8">
-                Prova a modificare i filtri di ricerca
-              </p>
-              <button
-                onClick={handleResetFilters}
-                className="inline-flex items-center gap-2 px-6 py-3 
-                         bg-foreground text-background text-sm font-medium
-                         rounded-sm hover:bg-foreground/90 transition-colors"
-              >
-                Mostra tutti gli articoli
-              </button>
+              <div className="inline-block w-8 h-8 border-2 border-foreground/20 border-t-foreground rounded-full animate-spin" />
+              <p className="text-muted-foreground mt-4">Caricamento articoli...</p>
             </div>
+          ) : (
+            <>
+              {/* Featured Article */}
+              {showFeatured && featuredArticle && (
+                <div className="mb-16 md:mb-20">
+                  <ArticleCard article={featuredArticle} variant="featured" />
+                </div>
+              )}
+
+              {/* Articles Grid or Empty State */}
+              {articles.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 lg:gap-x-10 gap-y-12 md:gap-y-16">
+                    {articles.map((article) => (
+                      <ArticleCard key={article.slug} article={article} />
+                    ))}
+                  </div>
+
+                  <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                </>
+              ) : (
+                <div className="py-20 text-center">
+                  <p className="font-serif text-2xl text-foreground mb-4">
+                    Nessun articolo trovato
+                  </p>
+                  <p className="text-muted-foreground mb-8">
+                    {allArticles.length === 0 
+                      ? "Non ci sono ancora articoli nel blog. Aggiungili da Shopify Admin → Online Store → Blog posts."
+                      : "Prova a modificare i filtri di ricerca"}
+                  </p>
+                  {allArticles.length > 0 && (
+                    <button
+                      onClick={handleResetFilters}
+                      className="inline-flex items-center gap-2 px-6 py-3 
+                               bg-foreground text-background text-sm font-medium
+                               rounded-sm hover:bg-foreground/90 transition-colors"
+                    >
+                      Mostra tutti gli articoli
+                    </button>
+                  )}
+                </div>
+              )}
+            </>
           )}
 
           {/* Newsletter Sidebar - Desktop */}
