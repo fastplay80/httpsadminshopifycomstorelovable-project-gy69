@@ -28,26 +28,16 @@ export const CartDrawer = () => {
 
   const handleCheckout = async () => {
     try {
-      // Open a new tab immediately to avoid popup blockers (must be in direct click handler)
-      const checkoutTab = window.open('about:blank', '_blank', 'noopener,noreferrer');
-      if (!checkoutTab) {
-        toast.error('Popup bloccato', {
-          description: 'Consenti i popup per aprire il checkout Shopify.'
-        });
-        return;
-      }
-
       const checkoutUrl = await createCheckout();
       if (!checkoutUrl) {
-        checkoutTab.close();
         toast.error('Checkout non disponibile', {
           description: 'Impossibile generare il link di checkout. Riprova tra poco.'
         });
         return;
       }
 
-      checkoutTab.location.href = checkoutUrl;
-      setIsOpen(false);
+      // Navigate to checkout in the same window (no popup issues, better UX)
+      window.location.href = checkoutUrl;
     } catch (error) {
       console.error('Checkout failed:', error);
       toast.error('Checkout fallito', {
