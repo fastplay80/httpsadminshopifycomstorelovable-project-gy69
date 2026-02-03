@@ -168,6 +168,17 @@ const Header = () => {
             {/* Language Selector */}
             <LanguageSelector />
 
+            {/* Account - link to Shopify customer accounts */}
+            <a
+              href="https://lovable-project-gy694.myshopify.com/account"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:flex p-2 hover:bg-muted rounded-sm transition-colors"
+              aria-label="Il mio account"
+            >
+              <User className="w-5 h-5" />
+            </a>
+
             {/* Cart */}
             <CartDrawer />
           </div>
@@ -253,13 +264,16 @@ const Header = () => {
           </ul>
           
           <div className="mt-8 pt-8 border-t border-border">
-            <Link
-              to="/account"
+            <a
+              href="https://lovable-project-gy694.myshopify.com/account"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-3 py-3 px-2 text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
             >
               <User className="w-5 h-5" />
               <span className="font-medium">Il mio account</span>
-            </Link>
+            </a>
           </div>
         </nav>
       </div>
