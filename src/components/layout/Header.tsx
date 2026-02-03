@@ -168,15 +168,6 @@ const Header = () => {
             {/* Language Selector */}
             <LanguageSelector />
 
-            {/* Account - hidden on mobile for simplicity */}
-            <Link
-              to="/account"
-              className="hidden md:flex p-2 hover:bg-muted rounded-sm transition-colors"
-              aria-label="Il mio account"
-            >
-              <User className="w-5 h-5" />
-            </Link>
-
             {/* Cart */}
             <CartDrawer />
           </div>
