@@ -476,7 +476,7 @@ export interface ShopifyBlog {
 }
 
 // Default blog handle - change this to match your Shopify blog handle
-const DEFAULT_BLOG_HANDLE = 'news';
+const DEFAULT_BLOG_HANDLE = 'notizie';
 
 // Fetch all blogs
 export async function fetchBlogs(first: number = 10): Promise<ShopifyBlog[]> {
