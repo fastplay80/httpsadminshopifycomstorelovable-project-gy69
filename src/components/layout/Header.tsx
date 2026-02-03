@@ -4,7 +4,7 @@ import { Search, Menu, X, User, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import minneleaLogo from '@/assets/minnelea-logo.png';
 import CartDrawer from '@/components/cart/CartDrawer';
-
+import LanguageSelector from '@/components/layout/LanguageSelector';
 const shopCategories = [
   { name: 'Tutti i Prodotti', href: '/collezioni/tutti' },
   { name: 'Marmellate', href: '/collezioni/marmellate' },
@@ -164,6 +164,9 @@ const Header = () => {
             >
               <Search className="w-5 h-5" />
             </button>
+
+            {/* Language Selector */}
+            <LanguageSelector />
 
             {/* Account - hidden on mobile for simplicity */}
             <Link
