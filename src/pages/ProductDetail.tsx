@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Plus, Minus, ShoppingCart, Loader2 } from 'lucide-react';
 import { fetchProductByHandle, CartItem, ShopifyProduct, parseProductMetadata } from '@/lib/shopify';
+import { useLanguage } from '@/hooks/use-language';
 import { useCartStore } from '@/stores/cartStore';
 import { toast } from 'sonner';
 import Header from '@/components/layout/Header';
@@ -21,6 +22,7 @@ const ProductDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const language = useLanguage();
   
   const addItem = useCartStore(state => state.addItem);
 
@@ -33,7 +35,7 @@ const ProductDetail = () => {
       setIsLoading(false);
     };
     loadProduct();
-  }, [handle]);
+  }, [handle, language]); // Refetch when language changes
 
   // Parse metafields for product metadata - MUST be before any early returns
   const metadata = useMemo(() => parseProductMetadata(product?.metafields), [product?.metafields]);

@@ -6,6 +6,16 @@ const SHOPIFY_STORE_PERMANENT_DOMAIN = 'minnelea2.myshopify.com';
 const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
 const SHOPIFY_STOREFRONT_TOKEN = '4a524555b0ee7feed6e4c7ea71191cb5';
 
+// Supported language codes mapping for Shopify (ISO 639-1)
+export type ShopifyLanguageCode = 'IT' | 'EN' | 'DE' | 'FR' | 'ES' | 'NL';
+
+// Get current language from localStorage
+export function getCurrentLanguage(): ShopifyLanguageCode {
+  const saved = localStorage.getItem('minnelea-language');
+  const code = saved?.toUpperCase() as ShopifyLanguageCode;
+  return ['IT', 'EN', 'DE', 'FR', 'ES', 'NL'].includes(code) ? code : 'IT';
+}
+
 // TypeScript interfaces
 export interface ProductMetafield {
   key: string;
@@ -78,9 +88,9 @@ export interface ProductMetadata {
   };
 }
 
-// GraphQL Queries
+// GraphQL Queries with @inContext for translations
 const STOREFRONT_PRODUCTS_QUERY = `
-  query GetProducts($first: Int!, $query: String) {
+  query GetProducts($first: Int!, $query: String, $language: LanguageCode) @inContext(language: $language) {
     products(first: $first, query: $query) {
       edges {
         node {
@@ -130,7 +140,7 @@ const STOREFRONT_PRODUCTS_QUERY = `
 `;
 
 const STOREFRONT_PRODUCT_BY_HANDLE_QUERY = `
-  query GetProductByHandle($handle: String!) {
+  query GetProductByHandle($handle: String!, $language: LanguageCode) @inContext(language: $language) {
     productByHandle(handle: $handle) {
       id
       title
@@ -194,9 +204,9 @@ const STOREFRONT_PRODUCT_BY_HANDLE_QUERY = `
   }
 `;
 
-// Blog articles query
+// Blog articles query with translations
 const STOREFRONT_BLOG_ARTICLES_QUERY = `
-  query GetBlogArticles($first: Int!, $blogHandle: String!) {
+  query GetBlogArticles($first: Int!, $blogHandle: String!, $language: LanguageCode) @inContext(language: $language) {
     blog(handle: $blogHandle) {
       id
       title
@@ -227,7 +237,7 @@ const STOREFRONT_BLOG_ARTICLES_QUERY = `
 `;
 
 const STOREFRONT_ARTICLE_BY_HANDLE_QUERY = `
-  query GetArticleByHandle($blogHandle: String!, $articleHandle: String!) {
+  query GetArticleByHandle($blogHandle: String!, $articleHandle: String!, $language: LanguageCode) @inContext(language: $language) {
     blog(handle: $blogHandle) {
       articleByHandle(handle: $articleHandle) {
         id
@@ -251,7 +261,7 @@ const STOREFRONT_ARTICLE_BY_HANDLE_QUERY = `
 `;
 
 const STOREFRONT_BLOGS_QUERY = `
-  query GetBlogs($first: Int!) {
+  query GetBlogs($first: Int!, $language: LanguageCode) @inContext(language: $language) {
     blogs(first: $first) {
       edges {
         node {
@@ -342,10 +352,11 @@ export async function storefrontApiRequest(query: string, variables: Record<stri
   return data;
 }
 
-// Fetch all products
+// Fetch all products with language support
 export async function fetchProducts(first: number = 20, query?: string): Promise<ShopifyProduct[]> {
   try {
-    const data = await storefrontApiRequest(STOREFRONT_PRODUCTS_QUERY, { first, query });
+    const language = getCurrentLanguage();
+    const data = await storefrontApiRequest(STOREFRONT_PRODUCTS_QUERY, { first, query, language });
     if (!data) return [];
     return data.data.products.edges;
   } catch (error) {
@@ -354,10 +365,11 @@ export async function fetchProducts(first: number = 20, query?: string): Promise
   }
 }
 
-// Fetch single product by handle
+// Fetch single product by handle with language support
 export async function fetchProductByHandle(handle: string) {
   try {
-    const data = await storefrontApiRequest(STOREFRONT_PRODUCT_BY_HANDLE_QUERY, { handle });
+    const language = getCurrentLanguage();
+    const data = await storefrontApiRequest(STOREFRONT_PRODUCT_BY_HANDLE_QUERY, { handle, language });
     if (!data) return null;
     return data.data.productByHandle;
   } catch (error) {
@@ -478,10 +490,11 @@ export interface ShopifyBlog {
 // Default blog handle - change this to match your Shopify blog handle
 const DEFAULT_BLOG_HANDLE = 'notizie';
 
-// Fetch all blogs
+// Fetch all blogs with language support
 export async function fetchBlogs(first: number = 10): Promise<ShopifyBlog[]> {
   try {
-    const data = await storefrontApiRequest(STOREFRONT_BLOGS_QUERY, { first });
+    const language = getCurrentLanguage();
+    const data = await storefrontApiRequest(STOREFRONT_BLOGS_QUERY, { first, language });
     if (!data) return [];
     return data.data.blogs.edges.map((edge: { node: ShopifyBlog }) => edge.node);
   } catch (error) {
@@ -490,10 +503,11 @@ export async function fetchBlogs(first: number = 10): Promise<ShopifyBlog[]> {
   }
 }
 
-// Fetch all articles from a blog
+// Fetch all articles from a blog with language support
 export async function fetchBlogArticles(first: number = 50, blogHandle: string = DEFAULT_BLOG_HANDLE): Promise<ShopifyArticle[]> {
   try {
-    const data = await storefrontApiRequest(STOREFRONT_BLOG_ARTICLES_QUERY, { first, blogHandle });
+    const language = getCurrentLanguage();
+    const data = await storefrontApiRequest(STOREFRONT_BLOG_ARTICLES_QUERY, { first, blogHandle, language });
     if (!data || !data.data.blog) return [];
     return data.data.blog.articles.edges.map((edge: { node: ShopifyArticle }) => edge.node);
   } catch (error) {
@@ -502,10 +516,11 @@ export async function fetchBlogArticles(first: number = 50, blogHandle: string =
   }
 }
 
-// Fetch single article by handle
+// Fetch single article by handle with language support
 export async function fetchArticleByHandle(articleHandle: string, blogHandle: string = DEFAULT_BLOG_HANDLE): Promise<ShopifyArticle | null> {
   try {
-    const data = await storefrontApiRequest(STOREFRONT_ARTICLE_BY_HANDLE_QUERY, { blogHandle, articleHandle });
+    const language = getCurrentLanguage();
+    const data = await storefrontApiRequest(STOREFRONT_ARTICLE_BY_HANDLE_QUERY, { blogHandle, articleHandle, language });
     if (!data || !data.data.blog) return null;
     return data.data.blog.articleByHandle;
   } catch (error) {
@@ -521,10 +536,19 @@ export function calculateReadingTime(content: string): number {
   return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
 }
 
-// Format date for display
+// Format date for display based on current language
 export function formatArticleDate(isoDate: string): string {
+  const language = getCurrentLanguage().toLowerCase();
+  const localeMap: Record<string, string> = {
+    it: 'it-IT',
+    en: 'en-GB',
+    de: 'de-DE',
+    fr: 'fr-FR',
+    es: 'es-ES',
+    nl: 'nl-NL',
+  };
   const date = new Date(isoDate);
-  return date.toLocaleDateString('it-IT', {
+  return date.toLocaleDateString(localeMap[language] || 'it-IT', {
     day: 'numeric',
     month: 'long',
     year: 'numeric'

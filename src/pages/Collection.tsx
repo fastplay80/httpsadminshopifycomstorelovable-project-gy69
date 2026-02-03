@@ -6,6 +6,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ShopifyProductCard from '@/components/home/ShopifyProductCard';
 import { fetchProducts, ShopifyProduct } from '@/lib/shopify';
+import { useLanguage } from '@/hooks/use-language';
 
 const collectionTitles: Record<string, string> = {
   'confetture': 'Confetture',
@@ -25,9 +26,10 @@ const collectionDescriptions: Record<string, string> = {
 
 const Collection = () => {
   const { slug } = useParams<{ slug: string }>();
+  const language = useLanguage();
   
   const { data: products, isLoading } = useQuery({
-    queryKey: ['products', slug],
+    queryKey: ['products', slug, language],
     queryFn: async () => {
       const allProducts = await fetchProducts(50);
       // Filter available products
