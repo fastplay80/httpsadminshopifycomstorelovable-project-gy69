@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { ShoppingBag, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
+import { toast } from "sonner";
 
 export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,11 +28,31 @@ export const CartDrawer = () => {
 
   const handleCheckout = async () => {
     try {
-      // createCheckout now opens the checkout URL directly
-      await createCheckout();
+      // Open a new tab immediately to avoid popup blockers (must be in direct click handler)
+      const checkoutTab = window.open('about:blank', '_blank', 'noopener,noreferrer');
+      if (!checkoutTab) {
+        toast.error('Popup bloccato', {
+          description: 'Consenti i popup per aprire il checkout Shopify.'
+        });
+        return;
+      }
+
+      const checkoutUrl = await createCheckout();
+      if (!checkoutUrl) {
+        checkoutTab.close();
+        toast.error('Checkout non disponibile', {
+          description: 'Impossibile generare il link di checkout. Riprova tra poco.'
+        });
+        return;
+      }
+
+      checkoutTab.location.href = checkoutUrl;
       setIsOpen(false);
     } catch (error) {
       console.error('Checkout failed:', error);
+      toast.error('Checkout fallito', {
+        description: 'Si è verificato un errore durante la creazione del checkout.'
+      });
     }
   };
 
