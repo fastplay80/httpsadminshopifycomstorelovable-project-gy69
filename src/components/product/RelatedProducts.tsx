@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Loader2 } from 'lucide-react';
 import { fetchProducts, ShopifyProduct, CartItem } from '@/lib/shopify';
+import { useLanguage } from '@/hooks/use-language';
 import { useCartStore } from '@/stores/cartStore';
 import { toast } from 'sonner';
 
@@ -13,6 +14,7 @@ const RelatedProducts = ({ currentProductHandle }: RelatedProductsProps) => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const addItem = useCartStore(state => state.addItem);
+  const language = useLanguage();
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -26,7 +28,7 @@ const RelatedProducts = ({ currentProductHandle }: RelatedProductsProps) => {
       setIsLoading(false);
     };
     loadProducts();
-  }, [currentProductHandle]);
+  }, [currentProductHandle, language]); // Refetch when language changes
 
   const handleAddToCart = (product: ShopifyProduct, e: React.MouseEvent) => {
     e.preventDefault();

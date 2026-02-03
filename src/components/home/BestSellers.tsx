@@ -1,11 +1,13 @@
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { fetchProducts, ShopifyProduct } from '@/lib/shopify';
+import { useLanguage } from '@/hooks/use-language';
 import ShopifyProductCard from './ShopifyProductCard';
 
 const BestSellers = () => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const language = useLanguage();
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -21,7 +23,7 @@ const BestSellers = () => {
       setIsLoading(false);
     };
     loadProducts();
-  }, []);
+  }, [language]); // Refetch when language changes
 
   return (
     <section 
