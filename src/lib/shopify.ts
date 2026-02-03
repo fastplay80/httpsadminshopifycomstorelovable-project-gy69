@@ -450,11 +450,17 @@ export async function createStorefrontCheckout(items: CartItem[]): Promise<strin
     }
 
     // Force myshopify.com domain for checkout (bypasses custom domain issues)
-    let checkoutUrl = cart.checkoutUrl;
-    checkoutUrl = checkoutUrl.replace('minnelea.com', 'minnelea2.myshopify.com');
+    let checkoutUrl: string = cart.checkoutUrl;
+    
+    // Replace custom domain with myshopify.com domain
+    if (checkoutUrl.includes('minnelea.com')) {
+      checkoutUrl = checkoutUrl.replace('minnelea.com', 'minnelea2.myshopify.com');
+    }
     
     const url = new URL(checkoutUrl);
     url.searchParams.set('channel', 'online_store');
+    
+    console.log('Checkout URL generated:', url.toString());
     return url.toString();
   } catch (error) {
     console.error('Error creating storefront checkout:', error);

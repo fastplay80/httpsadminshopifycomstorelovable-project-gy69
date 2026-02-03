@@ -79,8 +79,14 @@ export const useCartStore = create<CartStore>()(
 
         setLoading(true);
         try {
+          // Always create a fresh checkout
           const checkoutUrl = await createStorefrontCheckout(items);
           setCheckoutUrl(checkoutUrl);
+          
+          // Open checkout in new tab
+          if (checkoutUrl) {
+            window.open(checkoutUrl, '_blank', 'noopener,noreferrer');
+          }
         } catch (error) {
           console.error('Failed to create checkout:', error);
         } finally {
