@@ -16,7 +16,7 @@ interface CartStore {
   setCartId: (cartId: string) => void;
   setCheckoutUrl: (url: string) => void;
   setLoading: (loading: boolean) => void;
-  createCheckout: () => Promise<void>;
+  createCheckout: () => Promise<string | null>;
   getTotalItems: () => number;
   getTotalPrice: () => number;
 }
@@ -75,20 +75,17 @@ export const useCartStore = create<CartStore>()(
 
       createCheckout: async () => {
         const { items, setLoading, setCheckoutUrl } = get();
-        if (items.length === 0) return;
+        if (items.length === 0) return null;
 
         setLoading(true);
         try {
           // Always create a fresh checkout
           const checkoutUrl = await createStorefrontCheckout(items);
           setCheckoutUrl(checkoutUrl);
-          
-          // Open checkout in new tab
-          if (checkoutUrl) {
-            window.open(checkoutUrl, '_blank', 'noopener,noreferrer');
-          }
+          return checkoutUrl;
         } catch (error) {
           console.error('Failed to create checkout:', error);
+          return null;
         } finally {
           setLoading(false);
         }
