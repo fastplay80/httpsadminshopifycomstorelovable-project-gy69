@@ -170,7 +170,7 @@ const Header = () => {
 
             {/* Account - link to Shopify customer accounts */}
             <a
-              href="https://lovable-project-gy694.myshopify.com/account"
+              href="https://minnelea2.myshopify.com/account"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden md:flex p-2 hover:bg-muted rounded-sm transition-colors"
@@ -265,7 +265,7 @@ const Header = () => {
           
           <div className="mt-8 pt-8 border-t border-border">
             <a
-              href="https://lovable-project-gy694.myshopify.com/account"
+              href="https://minnelea2.myshopify.com/account"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 py-3 px-2 text-muted-foreground hover:text-foreground transition-colors"
