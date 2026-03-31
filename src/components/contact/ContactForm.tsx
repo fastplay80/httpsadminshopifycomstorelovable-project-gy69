@@ -197,6 +197,41 @@ export const ContactForm = () => {
         )}
       </div>
 
+      {/* Privacy checkbox */}
+      <div>
+        <label className="flex items-start gap-3 cursor-pointer group">
+          <input
+            type="checkbox"
+            name="privacy"
+            checked={formData.privacy}
+            onChange={(e) => {
+              setFormData(prev => ({ ...prev, privacy: e.target.checked }));
+              if (errors.privacy) {
+                setErrors(prev => ({ ...prev, privacy: undefined }));
+              }
+            }}
+            className="mt-1 w-4 h-4 rounded-sm border-border text-primary 
+                     focus:ring-ring accent-primary cursor-pointer"
+          />
+          <span className="text-sm text-muted-foreground leading-relaxed">
+            Ho letto e accetto l'
+            <a 
+              href="/privacy-policy" 
+              target="_blank" 
+              className="text-foreground underline underline-offset-2 hover:text-primary transition-colors"
+            >
+              informativa sulla privacy
+            </a>
+            {' '}ai sensi del GDPR (Reg. UE 2016/679). *
+          </span>
+        </label>
+        {errors.privacy && (
+          <p className="text-sm text-destructive mt-1" role="alert">
+            {errors.privacy}
+          </p>
+        )}
+      </div>
+
       {/* Submit */}
       <button
         type="submit"
