@@ -1,15 +1,33 @@
 import { Link } from 'react-router-dom';
 import { Clock, ChefHat, ArrowRight } from 'lucide-react';
-import { getAllRecipes, Recipe } from '@/lib/recipes';
+import { getAllRecipes, mockProducts, Recipe } from '@/lib/recipes';
 
 interface ProductRecipesProps {
   productTitle: string;
 }
 
 const ProductRecipes = ({ productTitle }: ProductRecipesProps) => {
-  // Get all recipes and show up to 3
+  // Find matching sponsored product by fuzzy title match
+  const normalise = (s: string) => s.toLowerCase().replace(/[^a-zàèéìòù0-9]/g, '');
+  const normTitle = normalise(productTitle);
+
+  const matchedProduct = mockProducts.find(p => {
+    const normName = normalise(p.name);
+    // Check if either contains the other, or significant overlap
+    return normTitle.includes(normName) || normName.includes(normTitle) ||
+      normTitle.split(' ').filter(w => w.length > 3 && normName.includes(w)).length >= 2;
+  });
+
+  if (!matchedProduct) return null;
+
   const allRecipes = getAllRecipes();
-  const recipes = allRecipes.filter(r => r.published).slice(0, 3);
+  // Filter recipes that use this product as ingredient or mention it in tips
+  const recipes = allRecipes.filter(r => {
+    if (!r.published) return false;
+    const inIngredients = r.ingredients.some(i => i.sponsoredProductId === matchedProduct.id);
+    const inTips = r.tips.some(t => t.sponsoredProductId === matchedProduct.id);
+    return inIngredients || inTips;
+  }).slice(0, 3);
 
   if (recipes.length === 0) return null;
 
@@ -21,7 +39,7 @@ const ProductRecipes = ({ productTitle }: ProductRecipesProps) => {
             Lasciati ispirare
           </p>
           <h2 className="font-serif text-2xl md:text-3xl font-medium text-foreground">
-            Ricette con i nostri prodotti
+            Ricette con questo prodotto
           </h2>
         </div>
         <Link
@@ -58,7 +76,6 @@ const RecipeCardCompact = ({ recipe }: { recipe: Recipe }) => {
       to={`/ricette/${recipe.slug}`}
       className="group block rounded-sm overflow-hidden border border-border hover:shadow-md transition-shadow"
     >
-      {/* Image */}
       <div className="aspect-[16/10] overflow-hidden bg-secondary">
         <img
           src={recipe.imageUrl}
@@ -66,13 +83,10 @@ const RecipeCardCompact = ({ recipe }: { recipe: Recipe }) => {
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
-
-      {/* Content */}
       <div className="p-4">
         <h3 className="font-serif text-lg font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2">
           {recipe.title}
         </h3>
-
         <div className="flex items-center gap-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-1">
             <Clock className="w-3.5 h-3.5" />
