@@ -6,12 +6,14 @@ interface FormData {
   email: string;
   reason: string;
   message: string;
+  privacy: boolean;
 }
 
 interface FormErrors {
   name?: string;
   email?: string;
   message?: string;
+  privacy?: string;
 }
 
 export const ContactForm = () => {
@@ -19,7 +21,8 @@ export const ContactForm = () => {
     name: "",
     email: "",
     reason: "ordini",
-    message: ""
+    message: "",
+    privacy: false
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,6 +47,10 @@ export const ContactForm = () => {
       newErrors.message = "Il messaggio è obbligatorio";
     } else if (formData.message.length > 1000) {
       newErrors.message = "Il messaggio deve essere inferiore a 1000 caratteri";
+    }
+    
+    if (!formData.privacy) {
+      newErrors.privacy = "Devi accettare l'informativa sulla privacy";
     }
     
     setErrors(newErrors);
@@ -186,6 +193,41 @@ export const ContactForm = () => {
         {errors.message && (
           <p id="message-error" className="text-sm text-destructive mt-1" role="alert">
             {errors.message}
+          </p>
+        )}
+      </div>
+
+      {/* Privacy checkbox */}
+      <div>
+        <label className="flex items-start gap-3 cursor-pointer group">
+          <input
+            type="checkbox"
+            name="privacy"
+            checked={formData.privacy}
+            onChange={(e) => {
+              setFormData(prev => ({ ...prev, privacy: e.target.checked }));
+              if (errors.privacy) {
+                setErrors(prev => ({ ...prev, privacy: undefined }));
+              }
+            }}
+            className="mt-1 w-4 h-4 rounded-sm border-border text-primary 
+                     focus:ring-ring accent-primary cursor-pointer"
+          />
+          <span className="text-sm text-muted-foreground leading-relaxed">
+            Ho letto e accetto l'
+            <a 
+              href="/privacy-policy" 
+              target="_blank" 
+              className="text-foreground underline underline-offset-2 hover:text-primary transition-colors"
+            >
+              informativa sulla privacy
+            </a>
+            {' '}ai sensi del GDPR (Reg. UE 2016/679). *
+          </span>
+        </label>
+        {errors.privacy && (
+          <p className="text-sm text-destructive mt-1" role="alert">
+            {errors.privacy}
           </p>
         )}
       </div>
