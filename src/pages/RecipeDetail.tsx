@@ -1,14 +1,17 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Minus, Plus, ShoppingCart, Check } from 'lucide-react';
+import { Minus, Plus, ShoppingCart, Check, Loader2 } from 'lucide-react';
 import AnnouncementBar from '@/components/layout/AnnouncementBar';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import RelatedRecipes from '@/components/recipes/RelatedRecipes';
 import { getRecipeBySlug, getAllRecipes, getProductById } from '@/lib/recipes';
+import { fetchProductByHandle } from '@/lib/shopify';
+import { useCartStore } from '@/stores/cartStore';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { toast } from 'sonner';
 
 const RecipeDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -17,6 +20,8 @@ const RecipeDetail = () => {
   
   const [servings, setServings] = useState(recipe?.servings || 2);
   const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set());
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const addItem = useCartStore(state => state.addItem);
 
   // Calculate ingredient quantities based on servings
   const baseServings = recipe?.servings || 1;
@@ -139,14 +144,49 @@ const RecipeDetail = () => {
                 <Button 
                   size="lg" 
                   className="w-full sm:w-auto gap-2"
-                  onClick={() => {
+                  disabled={isAddingToCart}
+                  onClick={async () => {
                     // Select all products if none selected
-                    if (selectedProducts.size === 0) {
-                      setSelectedProducts(new Set(sponsoredProducts.map(p => p.product!.id)));
+                    const productsToAdd = selectedProducts.size === 0
+                      ? sponsoredProducts.filter(p => p.product?.shopifyHandle)
+                      : sponsoredProducts.filter(p => selectedProducts.has(p.product!.id) && p.product?.shopifyHandle);
+
+                    if (productsToAdd.length === 0) {
+                      toast.error('Nessun prodotto disponibile per l\'acquisto');
+                      return;
+                    }
+
+                    setIsAddingToCart(true);
+                    try {
+                      let addedCount = 0;
+                      for (const item of productsToAdd) {
+                        const shopifyProduct = await fetchProductByHandle(item.product!.shopifyHandle!);
+                        if (!shopifyProduct) continue;
+                        const variant = shopifyProduct.variants.edges[0]?.node;
+                        if (!variant) continue;
+
+                        addItem({
+                          product: { node: shopifyProduct },
+                          variantId: variant.id,
+                          variantTitle: variant.title,
+                          price: variant.price,
+                          quantity: 1,
+                          selectedOptions: variant.selectedOptions || [],
+                        });
+                        addedCount++;
+                      }
+                      if (addedCount > 0) {
+                        toast.success(`${addedCount} prodott${addedCount === 1 ? 'o aggiunto' : 'i aggiunti'} al carrello`);
+                      }
+                    } catch (error) {
+                      console.error('Error adding products to cart:', error);
+                      toast.error('Errore nell\'aggiunta al carrello');
+                    } finally {
+                      setIsAddingToCart(false);
                     }
                   }}
                 >
-                  <ShoppingCart className="w-4 h-4" />
+                  {isAddingToCart ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
                   Aggiungi {sponsoredProducts.length} prodott{sponsoredProducts.length === 1 ? 'o' : 'i'} al carrello
                 </Button>
               )}
