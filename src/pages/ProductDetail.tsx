@@ -7,6 +7,7 @@ import { useLanguage } from '@/hooks/use-language';
 import { useCartStore } from '@/stores/cartStore';
 import { toast } from 'sonner';
 import Header from '@/components/layout/Header';
+import ProductRecipes from '@/components/product/ProductRecipes';
 import Footer from '@/components/layout/Footer';
 import ProductBreadcrumb from '@/components/product/ProductBreadcrumb';
 import ProductInfo from '@/components/product/ProductInfo';
