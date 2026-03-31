@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 const SHOPIFY_API_VERSION = '2025-07';
 const SHOPIFY_STORE_PERMANENT_DOMAIN = 'minnelea2.myshopify.com';
 const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
-const SHOPIFY_STOREFRONT_TOKEN = 'e6d41ec37809eb16dc53134ff1b68f39';
+const SHOPIFY_STOREFRONT_TOKEN = '53d2694fbcdb6bf950165a9a12855f01';
 
 // Supported language codes mapping for Shopify (ISO 639-1)
 export type ShopifyLanguageCode = 'IT' | 'EN' | 'DE' | 'FR' | 'ES' | 'NL';
