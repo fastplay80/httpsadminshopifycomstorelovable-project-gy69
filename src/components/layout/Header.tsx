@@ -68,7 +68,7 @@ const Header = () => {
       className={cn(
         'sticky top-0 z-50 w-full transition-all duration-300',
         isScrolled 
-          ? 'bg-background/95 backdrop-blur-md shadow-subtle border-b border-border/50' 
+          ? 'bg-background backdrop-blur-none shadow-subtle border-b border-border/50' 
           : 'bg-background'
       )}
       role="banner"
