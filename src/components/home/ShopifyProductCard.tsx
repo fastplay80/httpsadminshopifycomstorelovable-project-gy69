@@ -106,8 +106,8 @@ const ShopifyProductCard = ({ product }: ShopifyProductCardProps) => {
           <button
             onClick={handleAddToCart}
             className="inline-flex items-center justify-center w-10 h-10 
-                     bg-primary text-primary-foreground rounded-sm
-                     hover:bg-primary/90 active:scale-95 transition-all"
+                     bg-sun text-white rounded-sm
+                     hover:bg-sun/90 active:scale-95 transition-all"
             aria-label={`Aggiungi ${node.title} al carrello`}
           >
             <Plus className="w-5 h-5" />
