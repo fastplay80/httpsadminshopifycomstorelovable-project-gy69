@@ -21,7 +21,8 @@ export const ContactForm = () => {
     name: "",
     email: "",
     reason: "ordini",
-    message: ""
+    message: "",
+    privacy: false
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
