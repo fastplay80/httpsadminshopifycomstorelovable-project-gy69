@@ -49,6 +49,10 @@ export const ContactForm = () => {
       newErrors.message = "Il messaggio deve essere inferiore a 1000 caratteri";
     }
     
+    if (!formData.privacy) {
+      newErrors.privacy = "Devi accettare l'informativa sulla privacy";
+    }
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
