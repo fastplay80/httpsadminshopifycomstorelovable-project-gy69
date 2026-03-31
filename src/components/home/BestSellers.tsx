@@ -1,5 +1,5 @@
 import { ArrowRight, Loader2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { fetchProducts, ShopifyProduct } from '@/lib/shopify';
 import { useLanguage } from '@/hooks/use-language';
 import ShopifyProductCard from './ShopifyProductCard';
@@ -8,6 +8,8 @@ const BestSellers = () => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const language = useLanguage();
+  const sectionRef = useRef<HTMLElement>(null);
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -19,20 +21,52 @@ const BestSellers = () => {
           (variant) => variant.node.availableForSale
         )
       );
-      setProducts(availableProducts);
+      // Sort: kits first, then others
+      const sorted = availableProducts.sort((a, b) => {
+        const aIsKit = a.node.productType?.toLowerCase().includes('kit') || a.node.title.toLowerCase().includes('kit');
+        const bIsKit = b.node.productType?.toLowerCase().includes('kit') || b.node.title.toLowerCase().includes('kit');
+        if (aIsKit && !bIsKit) return -1;
+        if (!aIsKit && bIsKit) return 1;
+        return 0;
+      });
+      // Show only 3
+      setProducts(sorted.slice(0, 3));
       setIsLoading(false);
     };
     loadProducts();
-  }, [language]); // Refetch when language changes
+  }, [language]);
+
+  // Parallax scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      // Calculate progress: 0 when section enters viewport, 1 when it leaves
+      const progress = Math.max(0, Math.min(1, 1 - (rect.top / windowHeight)));
+      setScrollY(progress);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <section 
-      className="section-padding bg-muted/50"
+      ref={sectionRef}
+      className="section-padding bg-muted/50 overflow-hidden"
       aria-labelledby="bestsellers-heading"
     >
       <div className="container-editorial">
-        {/* Section header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 md:mb-12">
+        {/* Section header with parallax */}
+        <div 
+          className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 md:mb-12"
+          style={{
+            transform: `translateY(${(1 - scrollY) * 30}px)`,
+            opacity: Math.min(1, scrollY * 2),
+            transition: 'opacity 0.1s ease-out',
+          }}
+        >
           <div>
             <h2 
               id="bestsellers-heading"
@@ -55,7 +89,7 @@ const BestSellers = () => {
           </a>
         </div>
 
-        {/* Products grid */}
+        {/* Products grid with staggered parallax */}
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
@@ -69,8 +103,17 @@ const BestSellers = () => {
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {products.map((product) => (
-              <ShopifyProductCard key={product.node.id} product={product} />
+            {products.map((product, index) => (
+              <div
+                key={product.node.id}
+                style={{
+                  transform: `translateY(${(1 - scrollY) * (40 + index * 20)}px)`,
+                  opacity: Math.min(1, scrollY * 2.5 - index * 0.2),
+                  transition: 'opacity 0.1s ease-out',
+                }}
+              >
+                <ShopifyProductCard product={product} />
+              </div>
             ))}
           </div>
         )}
