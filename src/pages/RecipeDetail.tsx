@@ -1,14 +1,17 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Minus, Plus, ShoppingCart, Check } from 'lucide-react';
+import { Minus, Plus, ShoppingCart, Check, Loader2 } from 'lucide-react';
 import AnnouncementBar from '@/components/layout/AnnouncementBar';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import RelatedRecipes from '@/components/recipes/RelatedRecipes';
 import { getRecipeBySlug, getAllRecipes, getProductById } from '@/lib/recipes';
+import { fetchProductByHandle } from '@/lib/shopify';
+import { useCartStore } from '@/stores/cartStore';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { toast } from 'sonner';
 
 const RecipeDetail = () => {
   const { slug } = useParams<{ slug: string }>();
