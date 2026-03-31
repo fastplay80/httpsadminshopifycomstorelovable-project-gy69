@@ -6,12 +6,14 @@ interface FormData {
   email: string;
   reason: string;
   message: string;
+  privacy: boolean;
 }
 
 interface FormErrors {
   name?: string;
   email?: string;
   message?: string;
+  privacy?: string;
 }
 
 export const ContactForm = () => {
