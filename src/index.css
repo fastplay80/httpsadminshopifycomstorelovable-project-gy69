@@ -30,8 +30,8 @@
     --muted: 80 14% 96%;
     --muted-foreground: 75 6% 40%;
     
-    /* Dark Green - Accent */
-    --accent: 105 49% 23%;
+    /* Sun Gold - Accent (for special elements) */
+    --accent: 40 92% 49%;
     --accent-foreground: 0 0% 100%;
     
     --destructive: 0 84% 60%;
