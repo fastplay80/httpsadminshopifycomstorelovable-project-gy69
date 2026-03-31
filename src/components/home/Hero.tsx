@@ -1,36 +1,66 @@
 import { ArrowRight, Award, Truck, Star } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 interface HeroProps {
   shippingThreshold?: number;
 }
 
 const Hero = ({ shippingThreshold = 59 }: HeroProps) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      const height = sectionRef.current.offsetHeight;
+      // Progress from 0 (top of section at top of viewport) to 1 (scrolled past)
+      const progress = Math.max(0, Math.min(1, -rect.top / height));
+      setScrollY(progress);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <section 
+      ref={sectionRef}
       className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden"
       aria-labelledby="hero-heading"
     >
-      {/* Background image placeholder */}
-      <div className="absolute inset-0 z-0">
+      {/* Background with parallax */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{ transform: `translateY(${scrollY * 80}px)` }}
+      >
         <div 
           className="absolute inset-0 bg-gradient-to-br from-[hsl(38,35%,88%)] via-[hsl(42,40%,92%)] to-[hsl(30,25%,85%)]"
           aria-hidden="true"
         />
-        {/* Decorative elements */}
+        {/* Decorative elements with independent parallax speeds */}
         <div 
           className="absolute top-20 right-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl"
+          style={{ transform: `translateY(${scrollY * -40}px) scale(${1 + scrollY * 0.2})` }}
           aria-hidden="true"
         />
         <div 
           className="absolute bottom-20 left-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl"
+          style={{ transform: `translateY(${scrollY * -60}px) scale(${1 + scrollY * 0.15})` }}
           aria-hidden="true"
         />
       </div>
 
       <div className="container-editorial relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Content */}
-          <div className="text-center lg:text-left">
+          {/* Content with upward parallax */}
+          <div 
+            className="text-center lg:text-left"
+            style={{
+              transform: `translateY(${scrollY * -50}px)`,
+              opacity: 1 - scrollY * 1.5,
+            }}
+          >
             <h1 
               id="hero-heading"
               className="heading-display text-foreground mb-6 text-balance"
@@ -81,10 +111,12 @@ const Hero = ({ shippingThreshold = 59 }: HeroProps) => {
             </div>
           </div>
 
-          {/* Hero image placeholder */}
-          <div className="relative hidden lg:block">
+          {/* Hero image with slower parallax */}
+          <div 
+            className="relative hidden lg:block"
+            style={{ transform: `translateY(${scrollY * -30}px)` }}
+          >
             <div className="aspect-[4/5] rounded-sm overflow-hidden bg-muted shadow-elevated">
-              {/* Placeholder for hero image - styled product arrangement */}
               <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center">
                 <div className="text-center p-8">
                   <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
@@ -97,8 +129,11 @@ const Hero = ({ shippingThreshold = 59 }: HeroProps) => {
               </div>
             </div>
             
-            {/* Floating accent card */}
-            <div className="absolute -bottom-6 -left-6 bg-card p-4 rounded-sm shadow-card">
+            {/* Floating accent card with bounce parallax */}
+            <div 
+              className="absolute -bottom-6 -left-6 bg-card p-4 rounded-sm shadow-card"
+              style={{ transform: `translateY(${scrollY * -20}px)` }}
+            >
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                 Prodotto del mese
               </p>
