@@ -103,7 +103,7 @@ const ProductDetail = () => {
 
         {/* Recipes */}
         <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <ProductRecipes productTitle={product.title} />
+          <ProductRecipes productHandle={handle || ''} />
         </section>
 
         {/* FAQ */}

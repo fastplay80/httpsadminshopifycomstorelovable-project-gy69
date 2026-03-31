@@ -3,6 +3,7 @@
 export interface SponsoredProduct {
   id: string;
   name: string;
+  shopifyHandle?: string;
   thumbUrl: string;
   price: number;
 }
@@ -100,35 +101,40 @@ export interface Recipe {
   suitableFor?: string[];
 }
 
-// Mock products for sponsored selects
+// Products linked to Shopify via handle
 export const mockProducts: SponsoredProduct[] = [
   {
     id: 'prod-1',
     name: 'Confettura Extra di Arance e Limoni',
+    shopifyHandle: 'marmellata-di-arance-e-limoni',
     thumbUrl: 'https://images.unsplash.com/photo-1563822249366-3efb23b8e0c9?w=100&h=100&fit=crop',
     price: 7.90,
   },
   {
     id: 'prod-2',
     name: 'Confettura Extra di Fragole',
+    shopifyHandle: 'confettura-extra-di-fragole',
     thumbUrl: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=100&h=100&fit=crop',
     price: 7.90,
   },
   {
     id: 'prod-3',
     name: 'Miele di Castagno del Cilento',
+    shopifyHandle: undefined,
     thumbUrl: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=100&h=100&fit=crop',
     price: 12.50,
   },
   {
     id: 'prod-4',
     name: 'Olio EVO Cilento DOP',
+    shopifyHandle: undefined,
     thumbUrl: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=100&h=100&fit=crop',
     price: 18.90,
   },
   {
     id: 'prod-5',
     name: 'Confettura Extra di Fichi',
+    shopifyHandle: 'confettura-extra-di-fichi',
     thumbUrl: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=100&h=100&fit=crop',
     price: 8.50,
   },
@@ -536,4 +542,19 @@ export const getAllRecipes = (): Recipe[] => {
 // Get product by ID
 export const getProductById = (productId: string): SponsoredProduct | undefined => {
   return mockProducts.find(p => p.id === productId);
+};
+
+// Get recipes that use a specific Shopify product (by handle)
+export const getRecipesByProductHandle = (handle: string): Recipe[] => {
+  // Find the sponsored product matching this Shopify handle
+  const product = mockProducts.find(p => p.shopifyHandle === handle);
+  if (!product) return [];
+
+  const allRecipes = getAllRecipes();
+  return allRecipes.filter(r => {
+    if (!r.published) return false;
+    const inIngredients = r.ingredients.some(i => i.sponsoredProductId === product.id);
+    const inTips = r.tips.some(t => t.sponsoredProductId === product.id);
+    return inIngredients || inTips;
+  });
 };
