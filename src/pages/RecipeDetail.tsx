@@ -20,6 +20,8 @@ const RecipeDetail = () => {
   
   const [servings, setServings] = useState(recipe?.servings || 2);
   const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set());
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const addItem = useCartStore(state => state.addItem);
 
   // Calculate ingredient quantities based on servings
   const baseServings = recipe?.servings || 1;
