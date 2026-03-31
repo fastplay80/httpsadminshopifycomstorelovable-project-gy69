@@ -543,3 +543,18 @@ export const getAllRecipes = (): Recipe[] => {
 export const getProductById = (productId: string): SponsoredProduct | undefined => {
   return mockProducts.find(p => p.id === productId);
 };
+
+// Get recipes that use a specific Shopify product (by handle)
+export const getRecipesByProductHandle = (handle: string): Recipe[] => {
+  // Find the sponsored product matching this Shopify handle
+  const product = mockProducts.find(p => p.shopifyHandle === handle);
+  if (!product) return [];
+
+  const allRecipes = getAllRecipes();
+  return allRecipes.filter(r => {
+    if (!r.published) return false;
+    const inIngredients = r.ingredients.some(i => i.sponsoredProductId === product.id);
+    const inTips = r.tips.some(t => t.sponsoredProductId === product.id);
+    return inIngredients || inTips;
+  });
+};

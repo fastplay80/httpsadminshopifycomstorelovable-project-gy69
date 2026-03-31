@@ -1,33 +1,13 @@
 import { Link } from 'react-router-dom';
 import { Clock, ChefHat, ArrowRight } from 'lucide-react';
-import { getAllRecipes, mockProducts, Recipe } from '@/lib/recipes';
+import { getRecipesByProductHandle, Recipe } from '@/lib/recipes';
 
 interface ProductRecipesProps {
-  productTitle: string;
+  productHandle: string;
 }
 
-const ProductRecipes = ({ productTitle }: ProductRecipesProps) => {
-  // Find matching sponsored product by fuzzy title match
-  const normalise = (s: string) => s.toLowerCase().replace(/[^a-zàèéìòù0-9]/g, '');
-  const normTitle = normalise(productTitle);
-
-  const matchedProduct = mockProducts.find(p => {
-    const normName = normalise(p.name);
-    // Check if either contains the other, or significant overlap
-    return normTitle.includes(normName) || normName.includes(normTitle) ||
-      normTitle.split(' ').filter(w => w.length > 3 && normName.includes(w)).length >= 2;
-  });
-
-  if (!matchedProduct) return null;
-
-  const allRecipes = getAllRecipes();
-  // Filter recipes that use this product as ingredient or mention it in tips
-  const recipes = allRecipes.filter(r => {
-    if (!r.published) return false;
-    const inIngredients = r.ingredients.some(i => i.sponsoredProductId === matchedProduct.id);
-    const inTips = r.tips.some(t => t.sponsoredProductId === matchedProduct.id);
-    return inIngredients || inTips;
-  }).slice(0, 3);
+const ProductRecipes = ({ productHandle }: ProductRecipesProps) => {
+  const recipes = getRecipesByProductHandle(productHandle).slice(0, 3);
 
   if (recipes.length === 0) return null;
 
