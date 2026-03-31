@@ -3,6 +3,7 @@
 export interface SponsoredProduct {
   id: string;
   name: string;
+  shopifyHandle?: string;
   thumbUrl: string;
   price: number;
 }
