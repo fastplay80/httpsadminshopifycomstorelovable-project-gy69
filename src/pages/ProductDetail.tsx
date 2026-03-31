@@ -101,6 +101,11 @@ const ProductDetail = () => {
           />
         </section>
 
+        {/* Recipes */}
+        <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+          <ProductRecipes productTitle={product.title} />
+        </section>
+
         {/* FAQ */}
         <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-16">
           <ProductFAQ />
